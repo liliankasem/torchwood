@@ -5,8 +5,10 @@ var sourceMaps = require('gulp-sourcemaps');
 var tsc = require('gulp-typescript');
 var gulpConfig = require('./../gulp-config');
 var ncp = require('ncp').ncp;
+var path = require('path');
+var fs = require('fs');
 
-gulp.task('transpile', ['clean'], function () {
+gulp.task('transpile', function () {
     var tsResult = gulp
         .src(gulpConfig.allTypescript, {
             base: '.'
@@ -20,6 +22,18 @@ gulp.task('transpile', ['clean'], function () {
     return tsResult.js
         .pipe(sourceMaps.write('.'))
         .pipe(gulp.dest(''));
+});
+
+gulp.task('copy-package-json', function () {
+    if (!fs.existsSync(gulpConfig.output)) {
+        fs.mkdirSync(gulpConfig.output);
+    }
+    
+    ncp(gulpConfig.packageJSON, path.join(gulpConfig.output, 'package.json'), function (err) {
+        if (err) {
+            throw new Error('Gulp copy error: ' + err);
+        }
+    });
 });
 
 gulp.task('copy-public', function () {

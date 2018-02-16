@@ -12,6 +12,7 @@
     "test": "npm run build && node ./release/tests.js",
     "gulp": "gulp",
     "lint": "gulp tslint",
+    "package" : "npm run build && gulp package",
     "validate": "npm ls"
   },
   "author": {
