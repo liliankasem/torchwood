@@ -1,57 +1,62 @@
 {
-  "name": "ethereum-data",
-  "version": "1.0.0",
-  "description": "ethereum-data",
+  "name": "meeteric-js",
+  "version": "0.0.1",
+  "description": "meeteric-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ericmaino/meeteric-js"
+  },
   "main": "./bundle",
   "scripts": {
     "build": "gulp clean transpile",
-    "build-start": "npm run build && npm run start",
+    "test": "npm run build && node ./release/tests.js",
     "gulp": "gulp",
     "lint": "gulp tslint",
-    "start": "node ./bundle"
+    "validate": "npm ls"
   },
   "author": {
     "url": "https://www.meeteric.net",
     "name": "Eric Maino",
     "email": "eric.maino@microsoft.com"
   },
-  "contributors": [
-    {
-      "url": "",
-      "name": "",
-      "email": ""
-    }
-  ],
   "license": "MIT",
   "dependencies": {
-    "localize": "^0.4.7",
-    "winston": "^2.4.0",
-    "crypto": "^1.0.1",
-    "winston": "^2.4.0",
-    "web3": "^0.19.1"
+    "@types/lodash": "^4.14.103",
+    "@types/node": "^9.4.6",
+    "azure": "^2.2.1-preview",
+    "azure-storage": "^2.8.0",
+    "config": "^1.29.4",
+    "ethereumjs-tx": "^1.3.3",
+    "jsontokens": "^0.7.6",
+    "keythereum": "^1.0.2",
+    "pad": "^2.0.3",
+    "solc": "^0.4.20",
+    "uport-connect": "^0.7.0",
+    "web3": "0.19.1",
+    "winston-azure-application-insights": "^1.1.1"
   },
   "devDependencies": {
-    "gulp-zip": "^4.0.0",
-    "eslint": "^3.12.2",
-    "express": "^4.15.3",
+    "ajv": "^6.1.1",
+    "ajv-keywords": "^3.1.0",
+    "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-eslint": "^3.0.1",
-    "gulp-istanbul": "^1.1.1",
-    "gulp-jshint": "^2.0.4",
-    "gulp-mocha": "^3.0.1",
-    "gulp-nsp": "^2.4.2",
-    "gulp-open": "^2.0.0",
-    "gulp-sourcemaps": "^1.9.1",
-    "gulp-tslint": "^7.0.1",
-    "gulp-typescript": "^3.1.3",
-    "jshint": "^2.9.4",
-    "lodash": "^4.17.4",
-    "nodemon": "^1.11.0",
-    "path": "^0.12.7",
+    "gulp-eslint": "^4.0.2",
+    "gulp-istanbul": "^1.1.3",
+    "gulp-jshint": "^2.1.0",
+    "gulp-mocha": "^5.0.0",
+    "gulp-nsp": "^3.0.1",
+    "gulp-open": "^2.1.0",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-tslint": "^8.1.3",
+    "gulp-typescript": "^4.0.1",
+    "gulp-zip": "^4.1.0",
+    "lodash": "^4.17.5",
+    "ncp": "^2.0.0",
     "precommit-hook": "^3.0.0",
+    "require-dir": "^1.0.0",
     "tslint": "^5.4.3",
     "tslint-microsoft-contrib": "^4.0.0",
-    "typescript": "^2.1.4"
+    "typescript": "^2.7.2"
   },
   "pre-commit": [
     "lint"

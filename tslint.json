@@ -8,7 +8,7 @@
     "curly": true,
     "eofline": false,
     "export-name": false,
-    "forin": true,
+    "forin": false,
     "function-name": true,
     "import-name": false,
     "indent": false,
@@ -116,7 +116,6 @@
       true,
       "check-open-brace",
       "check-catch",
-      "check-else",
       "check-whitespace"
     ],
     "one-variable-per-declaration": true,
