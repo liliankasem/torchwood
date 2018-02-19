@@ -22,7 +22,7 @@ export class BlockReader {
         if (this.latestBlock === -1) {
             this.latestBlock = await this.eth.GetLatestBlockNumber();
         }
-        else if (this.nextBlock === this.latestBlock) {
+        else if (this.currentBlock === this.latestBlock) {
             this.latestBlock = await this.eth.GetLatestBlockNumber();
         }
 
