@@ -10,16 +10,16 @@ import config = require('config');
 export class EthereumWatcher {
     private readonly eth: IEthereumReader;
     private readonly eventBus: IEventBus;
-    private readonly blockTracker: WatcherConfig;
+    private readonly blockTracker: IBlockTracker;
     private readonly blockReader: BlockDetailReader;
 
-    constructor(client: IEthereumReader, storage: IStorage, eventBus: IEventBus, blockNumber: number) {
+    constructor(client: IEthereumReader, eventBus: IEventBus, blockTracker: IBlockTracker) {
         this.eth = client;
         this.eventBus = eventBus;
-        this.blockTracker = new WatcherConfig(storage, blockNumber);
+        this.blockTracker = blockTracker;
         this.blockReader = new BlockDetailReader(client, this.blockTracker);
 
-        winston.info(storage.Identifier());
+        winston.info(blockTracker.Identifier());
         winston.info(eventBus.Identifier());
     }
 
@@ -49,7 +49,7 @@ export class EthereumWatcher {
     }
 }
 
-export class WatcherConfig implements IBlockTracker {
+export class EthereumBlockTracker implements IBlockTracker {
     private readonly configName: string;
     private readonly storage: IStorage;
     private readonly originalBlock: number;
@@ -83,6 +83,10 @@ export class WatcherConfig implements IBlockTracker {
             nextBlock: this.nextBlock
         });
         await this.storage.SaveItem(this.configName, content);
+    }
+
+    public Identifier() : string {
+        return this.storage.Identifier();
     }
 }
 
