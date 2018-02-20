@@ -19,6 +19,8 @@ gulp.task('transpile', function () {
             throw new Error('TypeScript transpilation error: ' + err);
         });
 
+    tsResult.dts.pipe(gulp.dest(''));
+
     return tsResult.js
         .pipe(sourceMaps.write('.'))
         .pipe(gulp.dest(''));
