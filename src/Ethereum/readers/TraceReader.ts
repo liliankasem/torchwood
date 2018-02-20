@@ -47,11 +47,11 @@ class TraceAddressExtractor {
                 if (trace.op === "CALL" || trace.op === "DELEGATECALL") {
                     possibleAddress = trace.stack[trace.stack.length - 2];
                 }
-                address = EthereumAddress.Parse(possibleAddress);
+                address = EthereumAddress.ParseFromStack(possibleAddress);
             }
         } else if (trace.op === "SSTORE") {
             for (const key in trace.storage) {
-                address = EthereumAddress.Parse(trace.storage[key]);
+                address = EthereumAddress.ParseFromStack(trace.storage[key]);
                 break;
             }
         }
