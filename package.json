@@ -9,7 +9,8 @@
   "main": "./bundle",
   "scripts": {
     "build": "gulp clean transpile",
-    "test": "npm run build && node ./release/tests.js",
+    "test": "mocha --recursive release/**/*Test*.js",
+    "test-withreport": "mocha --recursive release/**/*Test*.js --reporter mocha-junit-reporter --reporter-options mochaFile=./testresults/test-results.xml",
     "gulp": "gulp",
     "lint": "gulp tslint",
     "package": "npm run build && gulp package",
@@ -38,6 +39,7 @@
     "winston-azure-application-insights": "^1.1.1"
   },
   "devDependencies": {
+    "@types/mocha": "^5.2.5",
     "ajv": "^6.1.1",
     "ajv-keywords": "^3.1.0",
     "del": "^3.0.0",
@@ -53,6 +55,8 @@
     "gulp-typescript": "^4.0.1",
     "gulp-zip": "^4.1.0",
     "lodash": "^4.17.5",
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.18.0",
     "ncp": "^2.0.0",
     "precommit-hook": "^3.0.0",
     "require-dir": "^1.0.0",
