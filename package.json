@@ -12,7 +12,7 @@
     "test": "npm run build && node ./release/tests.js",
     "gulp": "gulp",
     "lint": "gulp tslint",
-    "package" : "npm run build && gulp package",
+    "package": "npm run build && gulp package",
     "validate": "npm ls"
   },
   "author": {
@@ -24,6 +24,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.103",
     "@types/node": "^9.4.6",
+    "applicationinsights": "^1.0.5",
     "azure": "^2.2.1-preview",
     "azure-storage": "^2.8.0",
     "config": "^1.29.4",
