@@ -1,11 +1,6 @@
 {
-  "name": "meeteric-js",
+  "name": "torchwood",
   "version": "1.0.5-preview",
-  "description": "meeteric-js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ericmaino/meeteric-js"
-  },
   "main": "./bundle",
   "scripts": {
     "build": "gulp clean transpile",
