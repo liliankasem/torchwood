@@ -21,6 +21,10 @@ export class EthereumTx {
             address = this.receipt.to;
         }
 
+        if (!address && this.tx.to) {
+            address = this.tx.to;
+        }
+
         return new EthereumAddress(address);
     }
 
