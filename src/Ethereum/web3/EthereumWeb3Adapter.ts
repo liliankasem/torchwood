@@ -21,7 +21,7 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
             this.web3.currentProvider.sendAsync({
                 jsonrpc: "2.0",
                 method: "debug_traceTransaction",
-                params: [txHash, {}],
+                params: [txHash],
                 id: new Date().getTime()
             }, function (err: any, result: any) {
                 if (err) {
@@ -32,7 +32,7 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
             });
         }));
 
-        return traceLog.structLogs;
+        return traceLog ? traceLog.structLogs : "";
     }
 
     public async GetCode(address: string): Promise<EthereumCode> {
