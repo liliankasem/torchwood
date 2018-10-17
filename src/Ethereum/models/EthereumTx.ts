@@ -21,6 +21,12 @@ export class EthereumTx {
             address = this.receipt.to;
         }
 
+        if (!address && this.tx.to) {
+            address = this.tx.to;
+        }
+
+        if (!address) { throw "There is no target address"; }
+
         return new EthereumAddress(address);
     }
 
