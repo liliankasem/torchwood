@@ -18,7 +18,7 @@ You can use Torchwood to create your own oracle. For this you need:
 - A config file pointing to the blockchain
 - An oracle file
 
-Example oracle project that uses torchwood: https://github.com/liliankasem/torchwood-demo/oracle
+Example oracle project that uses torchwood: https://github.com/liliankasem/torchwood-demo/tree/master/oracle
 
 1. `git clone https://github.com/liliankasem/torchwood-demo.git`
 2. `cd torchwood-demo/oracle`
@@ -60,7 +60,7 @@ In the case that this happens:
 4. Run the oracle again `npm run oracle`
 
 ### Sample contract project
-Example truffle contract project: https://github.com/liliankasem/torchwood-demo/truffle
+Example truffle contract project: https://github.com/liliankasem/torchwood-demo/tree/master/truffle
 
 The following will deploy a `Flag` contract onto the chain, it will also change the state of the flag from open (0) to closed (1).
 
