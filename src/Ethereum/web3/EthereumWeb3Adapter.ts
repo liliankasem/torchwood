@@ -78,7 +78,7 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
                     try {
                          value = contract[x.name](block);
                     } catch (e) {
-                        winston.error(e);
+                        winston.debug(e);
                         reject("The ABI provided does not match the address.");
                     }
 

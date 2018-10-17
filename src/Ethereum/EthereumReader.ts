@@ -43,7 +43,11 @@ export class EthereumReader implements IEthereumReader {
         let data: any = {};
 
         if (abi) {
-            data = await this.baseClient.ReadContract(address.AsHex(), abi, block.BlockNumber());
+            try {
+                data = await this.baseClient.ReadContract(address.AsHex(), abi, block.BlockNumber());
+            } catch (e) {
+                winston.warn(e);
+            }
         }
 
         const balance = await this.baseClient.GetBalance(address.AsHex());
