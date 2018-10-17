@@ -73,7 +73,14 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
 
             abi.forEach(x => {
                 if (x.constant && x.inputs.length === 0) {
-                    const value = contract[x.name](block);
+                    let value = null;
+
+                    try {
+                         value = contract[x.name](block);
+                    } catch (e) {
+                        winston.error(e);
+                        reject("The ABI provided does not match the address.");
+                    }
 
                     if (x.outputs[0].type === 'uint256') {
                         contractData[x.name] = value.toNumber();
