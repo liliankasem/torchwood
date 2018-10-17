@@ -57,7 +57,8 @@
     "require-dir": "^1.0.0",
     "tslint": "^5.4.3",
     "tslint-microsoft-contrib": "^4.0.0",
-    "typescript": "^2.7.2"
+    "typescript": "^2.7.2",
+    "ts-node": "3.3.0"
   },
   "pre-commit": [
     "lint"
