@@ -32,56 +32,6 @@ Example oracle project that uses torchwood: https://github.com/liliankasem/torch
 
 You should see things that have happened on the chain:
 
-```
-info: Local File System './demo/1539802767777-b78cdfceb7'
-info: Console Event Bus
-debug: Reading Block 0
-info: {"_block":1,"_address":"0x48b85cc7abe6f551929890c0ac5f738177379f63","_balance":"99.9464578"}
-info: {"_block":2,"_address":"0x48b85cc7abe6f551929890c0ac5f738177379f63","_balance":"99.9464578"}
-info: {"_block":3,"_address":"0x48b85cc7abe6f551929890c0ac5f738177379f63","_balance":"99.9464578"}
-info: {"_block":4,"_address":"0x48b85cc7abe6f551929890c0ac5f738177379f63","_balance":"99.9464578"}
-info: {"_block":5,"_address":"0x48b85cc7abe6f551929890c0ac5f738177379f63","_balance":"99.9464578"}
-```
-
-NB: this is assuming you have made transactions on the chain.
-
-### Seeing contract changes
-You need to provide the abi.json for torchwood to pick up the details of changes that happen on the chain such as the state changing from 0 to 1.
-
-To do that:
-
-1. In the demo folder, create a `Contracts` folder and drop in the .sol files for the contracts you've deployed on the chain.
-
-2. In the oracle, line 50, add or uncomment:
-
-``` typescript
-const contractFactory = new ContractFactory(web3Client, chainStorage, new Sha256Notary());
-await contractFactory.UploadAndVerify(await chainStorage.ReadItem('Flag.sol')); //or name of your contract
-```
-
-3. Reset the `nextBlock` inside watcherConfig.json back to 0
-
-4. Run `npm run build `
-
-5. Run `npm run oracle`
-   
-This will create a folder `Code` folder inside of the `Contracts` folder with the `abi.json` inside it. This will need to be copied to the folders inside `demo/.../Code/..`, e.g. `demo/1539877-b7cdxxx/Code/89ebb48xxx/`
-   - The names of the folders inside the `Code` folder are actually the hashes of the contract. However because torchwood uses a different version of solc to truffle, they end up having different hashes which is why we currently have to do this manually. Two solutions to this:
-        - A) Use torchwood to compile and deploy the contracts onto the chain
-        - B) A feature we want to develop is providing the ABI's to torchwood instead of having torchwood get the ABI's by compiling the contracts from the .sol files provided
-
-You should see something like this:
-
-``` LOG
-debug: Compiling 14274a7e818b648d0c55db85e7a71445c48cdbc48925899c669e031ae7364215
-debug: Persisting contract Flag
-```
-
-6. Reset the `nextBlock` inside watcherConfig.json back to 0
-7. Run again `npm run oracle`
-
-This time you should see the state changes that happened on the chain, in my example the state was set to 0 and then set to 1.
-
 ``` LOG
 info: Local File System './demo/1539802767777-b78cdfceb7'
 info: Console Event Bus
@@ -94,6 +44,20 @@ info: {"_block":4,"_address":"0x48b85cc7abe6f551929890c0ac5f738177379f63","_bala
 info: {"_block":5,"_address":"0x48b85cc7abe6f551929890c0ac5f738177379f63","_balance":"99.9464578"}
 info: {"_state":"1","_block":5,"_address":"0x715ed963a60658126c5e86801f448ec8fee5ecc3","_balance":"0"}
 ```
+
+NB: this is assuming you have made transactions on the chain.
+
+If you don't see any details about specific changes of a contract, it's probably because the hashes of the contracts are different. The names of the folders inside the `Code` folder are actually the hashes of the contract. However because torchwood uses a different version of solc to truffle, they end up having different hashes which is why we currently have to do this manually. Two possible solutions for this:
+
+- A) Use torchwood to compile and deploy the contracts onto the chain
+- B) A feature we want to develop is providing the ABI's to torchwood instead of having torchwood get the ABI's by compiling the contracts from the .sol files provided
+
+In the case that this happens:
+
+1. Stop the oracle
+2. Reset block value in `watcherConfig.json` block back to 0
+3. Copy the `abi.json` file (from the folder in `demo/chainid/Code` that contains it) into the other hash folders inside the `Code` folder
+4. Run the oracle again `npm run oracle`
 
 ### Sample contract project
 Example truffle contract project: https://github.com/liliankasem/torchwood-demo/truffle
