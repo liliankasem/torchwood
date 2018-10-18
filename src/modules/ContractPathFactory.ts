@@ -7,7 +7,7 @@ export class ContractPathFactory {
     private readonly storage: IStorage;
 
     constructor(storage: IStorage) {
-        this.root = "Contracts";
+        this.root = ".";
         this.storage = storage;
     }
 
