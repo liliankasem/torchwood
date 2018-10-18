@@ -50,5 +50,3 @@ test/localAssets
 
 # Ignore demo directory by default
 demo/
-testoracle.ts
-testcontract.ts
