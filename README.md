@@ -19,4 +19,4 @@ You can use Torchwood to create your own oracle. For this you need:
 - The .sol file of the contract you want to watch
 - An oracle file
 
-Follow the README of this sample oracle project that uses Torchwood: https://github.com/liliankasem/torchwood-demo/tree/master/oracle
+Follow the README of this sample oracle project that uses Torchwood: https://github.com/liliankasem/torchwood-oracle
