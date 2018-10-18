@@ -48,5 +48,7 @@ config/local.json
 test/localAssets
 .data/
 
-# Ignore demo directory by defaulit
+# Ignore demo directory by default
 demo/
+testoracle.ts
+testcontract.ts
