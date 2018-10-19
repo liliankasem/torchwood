@@ -62,6 +62,39 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
         });
     }
 
+    public async GetEvents(address: string, abi: any, block?: any): Promise<any> {
+        if (!block) {
+            block = 'latest';
+        }
+
+        return await this.queue.ExecuteJob(() => new Promise((resolve, reject) => {
+            const all_events = [];
+
+            // construct the contract
+            const contract = this.web3.eth.contract(abi).at(address);
+
+            // get all events listed in the contract on current block
+            const contract_event = contract.allEvents({ fromBlock: block, toBlock: block });
+
+            contract_event.get((error, result) => {
+                if (!error && result.length > 0) {
+                    const single_event = {};
+
+                    result.forEach(entry => {
+                        const event_identifier = 'event';
+                        const event_args_identifier = 'args';
+                        single_event[event_identifier] = entry.event;
+                        single_event[event_args_identifier] = entry.args;
+
+                        all_events.push(single_event);
+                    });
+                }
+            });
+
+            resolve(all_events);
+        }));
+    }
+
     public async ReadContract(address: string, abi: any, block?: any): Promise<any> {
         if (!block) {
             block = 'latest';
@@ -76,7 +109,7 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
                     let value = null;
 
                     try {
-                         value = contract[x.name](block);
+                        value = contract[x.name](block);
                     } catch (e) {
                         winston.debug(e);
                         reject("The ABI provided does not match the address.");

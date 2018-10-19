@@ -41,10 +41,12 @@ export class EthereumReader implements IEthereumReader {
     public async GetData(address: EthereumAddress, block: EthereumBlock): Promise<any> {
         const abi = await this.GetAbi(address);
         let data: any = {};
+        let events: any = {};
 
         if (abi) {
             try {
                 data = await this.baseClient.ReadContract(address.AsHex(), abi, block.BlockNumber());
+                events = await this.baseClient.GetEvents(address.AsHex(), abi, block.BlockNumber());
             } catch (e) {
                 winston.warn(e);
             }
@@ -56,6 +58,10 @@ export class EthereumReader implements IEthereumReader {
             data._block = block.BlockNumber();
             data._address = address.AsHex();
             data._balance = balance;
+        }
+
+        if (events) {
+            data._events = events;
         }
 
         return data;
