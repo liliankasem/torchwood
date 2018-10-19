@@ -3,6 +3,7 @@ import {
     EthereumTxInput,
     EthereumEstimate
 } from './models';
+import { generateDevelopmentStorageCredentials } from 'azure-storage';
 
 export interface IWeb3Adapter {
     GetCode(address: string): Promise<EthereumCode>;
@@ -12,6 +13,7 @@ export interface IWeb3Adapter {
     GetBlock(identitifer: any): Promise<any>;
     GetNetworkId(): Promise<number>;
     GetBalance(addrss: string): Promise<number>;
+    GetEvents(address: string, abi: any, block: any): Promise<any>;
     ReadContract(address: string, abi: any, block: any): Promise<any>;
     EstimateTx(tx: EthereumTxInput): Promise<EthereumEstimate>;
     PrepareEstimatedTx(tx: EthereumEstimate): Promise<any>;
