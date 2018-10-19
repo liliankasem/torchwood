@@ -3,7 +3,6 @@ import {
     EthereumTxInput,
     EthereumEstimate
 } from './models';
-import { generateDevelopmentStorageCredentials } from 'azure-storage';
 
 export interface IWeb3Adapter {
     GetCode(address: string): Promise<EthereumCode>;
