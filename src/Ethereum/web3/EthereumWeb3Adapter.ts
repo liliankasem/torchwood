@@ -10,8 +10,13 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
     private readonly web3: Web3;
     private readonly queue: JobQueue;
 
-    constructor(public rpcUrl: string) {
-        this.web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl, 2000));
+    constructor(public rpcUrl: string, public provider?: Web3) {
+        if (provider) {
+            this.web3 = provider;
+        }
+        else {
+            this.web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl, 2000));
+        }
         this.queue = new JobQueue();
     }
 
