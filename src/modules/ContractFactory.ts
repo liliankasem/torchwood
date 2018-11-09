@@ -54,7 +54,7 @@ export class ContractFactory {
         winston.debug(`Persisting contract ${contractName}`);
         const runtimeByteCode = `0x${contract.runtimeBytecode}`;
         const byteCode = `0x${contract.bytecode}`;
-        const byteSignature = this.notary.GetSignature(runtimeByteCode);
+        const byteSignature = (new Ethereum.Models.EthereumCode(runtimeByteCode)).Hash();
         const contractPaths = this.paths.GetContractPaths(sourceSignature, byteSignature, contractName);
 
         const fileWrites = [
