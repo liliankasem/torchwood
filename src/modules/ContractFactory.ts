@@ -21,6 +21,25 @@ export class ContractFactory {
         this.paths = new ContractPathFactory(storage);
     }
 
+
+    public async UploadTruffleCompiledJson(compiled : string) : Promise<IIdentifier> {
+        const contractData : any = JSON.parse(compiled);
+
+        // Compiled contracts from truffle have a '0x' prefixed on the bytecode.
+        contractData.deployedBytecode = contractData.deployedBytecode.split('0x')[1];
+        contractData.bytecode = contractData.bytecode.split('0x')[1];
+
+        // Normalize data to expected schema for the `WriteContractData` method
+        contractData.runtimeBytecode = contractData.deployedBytecode;
+        contractData.interface = JSON.stringify(contractData.abi);
+
+        const sourceSignature = this.notary.GetSignature(contractData.source);
+
+        await this.WriteContractData(sourceSignature, contractData, contractData.contractName);
+
+        return new GenericIdentifier(sourceSignature);
+    }
+
     public async UploadAndVerify(content: string): Promise<IIdentifier> {
         const sourceSignature = this.notary.GetSignature(content);
         const sourceFile = this.paths.GetSourceFilePath(sourceSignature);
