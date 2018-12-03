@@ -21,7 +21,7 @@
     "@types/lodash": "^4.14.103",
     "@types/node": "^9.4.6",
     "applicationinsights": "^1.0.5",
-    "azure": "^2.2.1-preview",
+    "azure": "2.3.1-preview",
     "azure-storage": "^2.8.0",
     "chai": "^4.2.0",
     "config": "^1.29.4",
