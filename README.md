@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/dwrdev/Torchwood/_apis/build/status/Torchwood-Master)](https://dev.azure.com/dwrdev/Torchwood/_build/latest?definitionId=114)
+
 # Torchwood
 
 An ethereum library for watching contract changes on the chain.
