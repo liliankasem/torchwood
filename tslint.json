@@ -105,8 +105,6 @@
     "no-unreachable": true,
     "no-unused-expression": true,
     "no-unused-imports": false,
-    "no-unused-variable": true,
-    "no-use-before-declare": true,
     "no-var-keyword": true,
     "no-var-requires": true,
     "no-var-self": true,

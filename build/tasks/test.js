@@ -24,7 +24,7 @@ gulp.task('pre-unit-tests', function () {
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task('run-unit-tests', ['pre-unit-tests'], function (cb) {
+gulp.task('run-unit-tests', gulp.series('pre-unit-tests', function (cb) {
     gulp.src(gulpConfig.javascriptUnitTests)
         .pipe(mocha({
             ui: mochaConfig.unitTestMochaInterface,
@@ -37,9 +37,9 @@ gulp.task('run-unit-tests', ['pre-unit-tests'], function (cb) {
             dir: istanbulConfig.unitTestCoverageDirectory
         }))
         .on('end', cb);
-});
+}));
 
-gulp.task('enforce-code-coverage', ['run-unit-tests'], function () {
+gulp.task('enforce-code-coverage', gulp.series('run-unit-tests', function () {
     return gulp.src(gulpConfig.allTranspiledJavascript)
         .pipe(istanbul.enforceThresholds({
             thresholds: {
@@ -59,9 +59,9 @@ gulp.task('enforce-code-coverage', ['run-unit-tests'], function () {
                 }
             }
         }));
-});
+}));
 
-gulp.task('show-unittest-coverage-report', ['run-unit-tests'], function () {
+gulp.task('show-unittest-coverage-report', gulp.series('run-unit-tests', function () {
     return gulp.src(istanbulConfig.unitTestCoverageReportHtmlFile)
         .pipe(browserOpen());
-});
+}));

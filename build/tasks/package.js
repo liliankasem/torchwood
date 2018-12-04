@@ -17,7 +17,7 @@ var knownOptions = {
 
 var options = minimist(process.argv.slice(2), knownOptions);
 
-gulp.task('package', ['copy-package-json'], function () {
+gulp.task('package', gulp.series('copy-package-json', function () {
 
     var packagePaths = ['release/**'];
 
@@ -29,4 +29,4 @@ gulp.task('package', ['copy-package-json'], function () {
     return gulp.src(packagePaths)
         .pipe(zip(options.packageName))
         .pipe(gulp.dest(options.packagePath));
-});
+}));
