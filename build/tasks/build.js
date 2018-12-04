@@ -19,14 +19,14 @@ gulp.task('transpile', function () {
             throw new Error('TypeScript transpilation error: ' + err);
         });
 
-    tsResult.dts.pipe(gulp.dest(''));
+    tsResult.dts.pipe(gulp.dest('./'));
 
     return tsResult.js
         .pipe(sourceMaps.write('.'))
-        .pipe(gulp.dest(''));
+        .pipe(gulp.dest('./'));
 });
 
-gulp.task('copy-package-json', function () {
+gulp.task('copy-package-json', gulp.series(function (done) {
     if (!fs.existsSync(gulpConfig.output)) {
         fs.mkdirSync(gulpConfig.output);
     }
@@ -36,7 +36,9 @@ gulp.task('copy-package-json', function () {
             throw new Error('Gulp copy error: ' + err);
         }
     });
-});
+
+    done();
+}));
 
 gulp.task('copy-public', function () {
     ncp(gulpConfig.srcPublicDir, gulpConfig.relPublicDir, function (err) {
