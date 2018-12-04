@@ -23,7 +23,7 @@ export class EthereumWatcher {
         winston.info(eventBus.Identifier());
     }
 
-    public async Monitor() {
+    public async ReadExistingBlocks() {
         while (await this.blockReader.MoveNext()) {
             const data = await this.blockReader.Read();
             const block = data.Block();
@@ -40,6 +40,11 @@ export class EthereumWatcher {
 
             await this.blockTracker.MarkComplete(block.BlockNumber());
         }
+    }
+
+    public async Monitor() {
+
+        await this.ReadExistingBlocks();
 
         const _self = this;
         setTimeout(async () => {
