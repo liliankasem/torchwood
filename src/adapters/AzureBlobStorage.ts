@@ -20,7 +20,7 @@ export class AzureBlobStorage implements IStorage {
             idPrefix = ` - '${this.pathPrefix}'`;
         }
 
-        this.identifier = `Azure Blob Storage '${connectionString}' - '${this.containerRoot}'${idPrefix}`;
+        this.identifier = `Azure Blob Storage - '${this.containerRoot}'${idPrefix}`;
     }
 
     public Identifier(): string {
