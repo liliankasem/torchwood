@@ -1,11 +1,10 @@
 import { EthereumAddress } from './EthereumAddress';
 import { EthereumTx } from './EthereumTx';
-import winston = require('winston');
 
 export class EthereumBlock {
     private readonly content;
 
-    constructor(content : any) {
+    constructor(content: any) {
         this.content = content;
     }
 
@@ -21,7 +20,7 @@ export class EthereumBlock {
         return this.content.number;
     }
 
-    public BlockHash() : string {
+    public BlockHash(): string {
         return this.content.hash;
     }
 
@@ -32,16 +31,16 @@ export class EthereumBlock {
 
 export class EthereumBlockDetail {
     private block: EthereumBlock;
-    private txs: Array<EthereumTx>;
-    public addresses: Array<EthereumAddress>;
+    public txs: EthereumTx[];
+    public addresses: EthereumAddress[];
 
-    constructor(block: EthereumBlock, txs: Array<EthereumTx>, addresses: Array<EthereumAddress>) {
+    constructor(block: EthereumBlock, txs: EthereumTx[], addresses: EthereumAddress[]) {
         this.block = block;
         this.txs = txs;
         this.addresses = addresses;
     }
 
-    public Block() : EthereumBlock {
+    public Block(): EthereumBlock {
         return this.block;
     }
 }

@@ -1,6 +1,4 @@
-import winston = require('winston');
-import jsontokens = require('jsontokens');
-import { Connect, Credentials, SimpleSigner, MNID } from 'uport-connect';
+import { Credentials, SimpleSigner, MNID } from 'uport-connect';
 
 export class UPortFactory {
     private readonly appName: string;
@@ -9,16 +7,17 @@ export class UPortFactory {
 
     public constructor(appName: string, networkId: string, identifer: string, key: string) {
         const signer = SimpleSigner(key);
+        this.appName = appName;
+        this.networkId = networkId;
+
         this.credentials = new Credentials({
-            appName: appName,
+            appName: this.appName,
             address: identifer,
             signer: signer
         });
-        this.appName = appName;
-        this.networkId = networkId;
     }
 
-    public GenerateFunctionCallUri(contractAddress: string, functionName: string, functionParams: Array<any>, callbackUrl: string): string {
+    public GenerateFunctionCallUri(contractAddress: string, functionName: string, functionParams: any[], callbackUrl: string): string {
         let paramString = '';
 
         if (functionParams != null) {
@@ -32,11 +31,10 @@ export class UPortFactory {
 
         const contractId = this.EncodeId(contractAddress);
         const encodedArgs = `function=${functionName}(${paramString})&callback_url=${callbackUrl}`;
-        const uri = `me.uport:${contractId}?${encodedArgs}`;
-        return uri;
+        return `me.uport:${contractId}?${encodedArgs}`;
     }
 
-    public async GenerateClaimsRequest(claims: Array<string>, callbackUrl: string, expiration: number): Promise<string> {
+    public async GenerateClaimsRequest(claims: string[], callbackUrl: string, expiration: number): Promise<string> {
         const requestToken = await this.credentials.createRequest({
             requested: claims,
             callbackUrl: callbackUrl,

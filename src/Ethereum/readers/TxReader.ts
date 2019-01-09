@@ -1,4 +1,3 @@
-import winston = require('winston');
 import { IEthereumReader } from './../IEthereumReader';
 import { EthereumBlock, EthereumTx } from './../models';
 
@@ -17,7 +16,7 @@ export class TxReader {
     public async MoveNext(): Promise<boolean> {
         let moved: boolean = false;
 
-        if ((++this.index) < this.block.TransactionCount()) {
+        if ((this.index += 1) < this.block.TransactionCount()) {
             moved = true;
         }
         return new Promise<boolean>(resolve => resolve(moved));

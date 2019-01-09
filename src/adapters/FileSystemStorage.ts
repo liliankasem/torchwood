@@ -1,4 +1,3 @@
-import winston = require('winston');
 import fs = require('fs');
 import path = require('path');
 

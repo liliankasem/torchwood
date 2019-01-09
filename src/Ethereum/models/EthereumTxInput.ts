@@ -1,25 +1,36 @@
 
 import { EthereumAddress } from './EthereumAddress';
-import { EthereumEstimate } from './EthereumEstimate';
+import { HexString } from '../../interfaces/index';
 
 export class EthereumTxInput {
     private readonly fromAddress: EthereumAddress;
-    private readonly byteCode: string;
-    private readonly paramCode: string;
+    private readonly toAddress: EthereumAddress;
+    private readonly byteCode: HexString;
+    private readonly paramCode: HexString;
 
-    constructor(fromAddress: EthereumAddress, byteCode: string, paramCode: string) {
+    constructor(fromAddress: EthereumAddress, byteCode: HexString, paramCode: HexString, toAddress: EthereumAddress = null) {
         this.fromAddress = fromAddress;
+        this.toAddress = toAddress;
         this.byteCode = byteCode;
         this.paramCode = paramCode;
     }
 
     public AsRawTx(): any {
-        const tx = {
-            from: this.fromAddress.AsHex(),
-            data: `0x${this.byteCode}${this.paramCode}`
-        };
+        let toAddress = null;
+        let data : HexString = null;
 
-        return tx;
+        if (this.toAddress !== null) {
+            toAddress = this.toAddress.AsHex();
+            data = this.paramCode;
+        } else {
+            data = this.byteCode.Prefix(this.paramCode);
+        }
+
+        return {
+            from: this.fromAddress.AsHex(),
+            to: toAddress,
+            data: data.AsHex()
+        };
     }
 
     public FromAddress(): EthereumAddress {

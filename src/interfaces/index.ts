@@ -1,3 +1,4 @@
+export * from './HexString';
 export * from './IBlockTracker';
 export * from './IEventBus';
 export * from './IIdentifier';

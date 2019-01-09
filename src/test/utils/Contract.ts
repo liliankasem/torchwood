@@ -8,7 +8,8 @@ export class Contract {
         return this;
     }
 
-    public get(callback: any) {
+    // tslint:disable-next-line
+    public get(callback: any): any {
         callback(null, this.payload);
     }
 }

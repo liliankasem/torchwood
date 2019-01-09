@@ -3,13 +3,14 @@
   "version": "1.0.5-preview",
   "main": "./bundle",
   "scripts": {
-    "build": "gulp clean transpile",
-    "test": "mocha --recursive release/**/*Test*.js",
+    "build": "tsc --build tsconfig.json",
+    "test": "npm run lint && npm run copy-test-artifacts && mocha --recursive release/**/*Test*.js",
+    "build-test": "npm run build && npm run test",
     "test-withreport": "mocha --recursive release/**/*Test*.js --reporter mocha-junit-reporter --reporter-options mochaFile=./testresults/test-results.xml",
-    "gulp": "gulp",
-    "lint": "gulp tslint",
-    "package": "npm run build && gulp package",
-    "validate": "npm ls"
+    "lint": "tslint -p tsconfig.json -t stylish",
+    "copy-package": "copyfiles package.json ./release/",
+    "copy-test-artifacts": "copyfiles -u 3 ./src/test/artifacts/**/* ./release/test/artifacts/",
+    "package": "npm run copy-package && npm pack ./release"
   },
   "author": {
     "url": "https://www.meeteric.net",
@@ -21,7 +22,7 @@
     "@types/lodash": "^4.14.103",
     "@types/node": "^9.4.6",
     "applicationinsights": "^1.0.5",
-    "azure": "2.3.1-preview",
+    "azure-sb": "^0.10.6",
     "azure-storage": "^2.8.0",
     "chai": "^4.2.0",
     "config": "^1.29.4",
@@ -29,38 +30,25 @@
     "jsontokens": "^0.7.6",
     "keythereum": "^1.0.2",
     "solc": "^0.4.20",
-    "uport-connect": "^1.0.2",
-    "web3": "0.19.1",
+    "uport-connect": "^1.0.0",
+    "web3": "^0.20.7",
     "winston-azure-application-insights": "^1.1.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "ajv": "^6.1.1",
     "ajv-keywords": "^3.1.0",
+    "copyfiles": "^2.1.0",
     "del": "^3.0.0",
-    "gulp": "^4.0.0",
-    "gulp-eslint": "^4.0.2",
-    "gulp-istanbul": "^1.1.3",
-    "gulp-jshint": "^2.1.0",
-    "gulp-mocha": "^5.0.0",
-    "gulp-nsp": "^3.0.1",
-    "gulp-open": "^3.0.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-tslint": "^8.1.3",
-    "gulp-typescript": "^4.0.1",
-    "gulp-zip": "^4.1.0",
     "lodash": "^4.17.5",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",
     "ncp": "^2.0.0",
-    "precommit-hook": "^3.0.0",
     "require-dir": "^1.0.0",
     "ts-node": "3.3.0",
-    "tslint": "^5.4.3",
-    "tslint-microsoft-contrib": "^4.0.0",
-    "typescript": "^2.7.2"
-  },
-  "pre-commit": [
-    "lint"
-  ]
+    "tslint": "^5.11.0",
+    "tslint-microsoft-contrib": "^5.2.1",
+    "typescript": "^3.1.6"
+  }
 }

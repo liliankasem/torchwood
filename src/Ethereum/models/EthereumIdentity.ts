@@ -1,5 +1,3 @@
-import { format } from 'url';
-
 export class EthereumIdentity {
     private networkId: number;
     private originHash: string;
@@ -8,7 +6,7 @@ export class EthereumIdentity {
     constructor(networkId: number, originHash: string) {
         this.networkId = networkId ? networkId : 0;
         this.originHash = originHash;
-        this.identity = `${this.PadLeft(this.networkId.toString(), 10, "0")}-${originHash.substr(2, 10)}`;
+        this.identity = `${this.PadLeft(this.networkId.toString(), 10, "0")}-${this.originHash.substr(2, 10)}`;
     }
 
     public AsString(): string {
