@@ -32,7 +32,7 @@ export class BlockReader {
 
         if (this.nextBlock <= this.latestBlock) {
             this.currentBlock = this.nextBlock;
-            this.nextBlock++;
+            this.nextBlock += 1;
             moved = true;
         }
 

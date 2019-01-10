@@ -1,5 +1,3 @@
-import winston = require('winston');
-
 class Job {
     private func;
     public promise;
@@ -8,6 +6,7 @@ class Job {
 
     constructor(func : any) {
         this.func = func;
+        // tslint:disable-next-line
         this.promise = new Promise((resolve, reject) => {
             this.resolve = resolve;
             this.reject = reject;
@@ -23,13 +22,13 @@ class Job {
 
 export class JobQueue {
     private readonly requestMax = 10;
-    private queue: Array<Job>;
-    private pendingQueue: Array<Job>;
+    private queue: Job[];
+    private pendingQueue: Job[];
     private processing = 0;
 
     constructor() {
-        this.queue = new Array<Job>();
-        this.pendingQueue = new Array<Job>();
+        this.queue = [];
+        this.pendingQueue = [];
     }
 
     public ExecuteJob(func : any) {
@@ -48,7 +47,7 @@ export class JobQueue {
             if (_self.pendingQueue.length < _self.requestMax) {
                 const job = _self.queue.pop();
                 _self.pendingQueue.push(job);
-                const result = await job.Execute();
+                await job.Execute();
                 _self.pendingQueue.pop();
 
                 if (_self.queue.length > 0 && !_self.processing) {
@@ -63,7 +62,6 @@ export class JobQueue {
 
     private StartProcessingQueue() {
         this.processing = 1;
-        const _self = this;
-        setTimeout(async () => { await _self.ProcessQueue(_self); }, 100);
+        setTimeout(async () => { await this.ProcessQueue(this); }, 100);
     }
 }

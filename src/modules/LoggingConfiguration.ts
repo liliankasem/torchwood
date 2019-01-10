@@ -60,7 +60,7 @@ export class LoggingConfiguration {
         treatErrorsAsExceptions: true
       };
 
-      winston.info(`Sending data to Application Insights`);
+      winston.info('Sending data to Application Insights');
       winston.add(winstonAiLogger.AzureApplicationInsightsLogger, aiConfig);
     }
 

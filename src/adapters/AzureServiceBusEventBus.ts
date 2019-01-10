@@ -1,4 +1,4 @@
-import azure = require('azure');
+import azure = require('azure-sb');
 import { IEventBus } from './../interfaces/IEventBus';
 
 export class ServiceBusConfig {

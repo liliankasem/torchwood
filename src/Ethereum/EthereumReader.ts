@@ -1,12 +1,10 @@
 import winston = require('winston');
-import fs = require('fs');
-import path = require('path');
 
 import { IReader, IStorage } from './../interfaces';
 import { TraceReader } from './readers';
 import { IEthereumReader } from './IEthereumReader';
 import { IWeb3Adapter } from './IWeb3Adapter';
-import { EthereumAddress, EthereumBlock, EthereumBlockDetail, EthereumIdentity, EthereumCode, EthereumTx } from './models';
+import { EthereumAddress, EthereumBlock, EthereumIdentity, EthereumTx } from './models';
 
 export class EthereumReader implements IEthereumReader {
     private readonly baseClient: IWeb3Adapter;

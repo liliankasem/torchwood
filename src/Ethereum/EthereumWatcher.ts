@@ -2,22 +2,19 @@ import winston = require('winston');
 
 import { IStorage, IEventBus, IBlockTracker } from './../interfaces';
 import { IEthereumReader } from './IEthereumReader';
-import { BlockDetailReader } from './readers/BlockDetailReader';
-
-import util = require('util');
-import config = require('config');
+import { BlockDetailIterator } from './readers/BlockDetailIterator';
 
 export class EthereumWatcher {
     private readonly eth: IEthereumReader;
     private readonly eventBus: IEventBus;
     private readonly blockTracker: IBlockTracker;
-    private readonly blockReader: BlockDetailReader;
+    private readonly blockReader: BlockDetailIterator;
 
     constructor(client: IEthereumReader, eventBus: IEventBus, blockTracker: IBlockTracker) {
         this.eth = client;
         this.eventBus = eventBus;
         this.blockTracker = blockTracker;
-        this.blockReader = new BlockDetailReader(client, this.blockTracker);
+        this.blockReader = new BlockDetailIterator(client, this.blockTracker);
 
         winston.info(blockTracker.Identifier());
         winston.info(eventBus.Identifier());
@@ -29,7 +26,7 @@ export class EthereumWatcher {
             const block = data.Block();
             let index = -1;
 
-            while ((++index) < data.addresses.length) {
+            while ((index += 1) < data.addresses.length) {
                 const address = data.addresses[index];
                 const output = await this.eth.GetData(address, block);
 
@@ -43,12 +40,9 @@ export class EthereumWatcher {
     }
 
     public async Monitor() {
-
         await this.ReadExistingBlocks();
-
-        const _self = this;
         setTimeout(async () => {
-            await _self.Monitor()
+            await this.Monitor()
                 .catch(err => winston.error(err));
         }, 8500);
     }

@@ -1,3 +1,4 @@
+export * from './Environment';
 export * from './AzureBlobStorage';
 export * from './AzureServiceBusEventBus';
 export * from './ConsoleEventBus';
@@ -6,3 +7,4 @@ export * from './FileSystemStorage';
 export * from './GenericIdentifier';
 export * from './Sha256Notary';
 export * from './SigningNotary';
+export * from './SigningNotaryCache';

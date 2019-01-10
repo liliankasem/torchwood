@@ -1,5 +1,4 @@
 import azure = require('azure-storage');
-import winston = require('winston');
 import { IStorage } from './../interfaces/IStorage';
 
 export class AzureBlobStorage implements IStorage {
@@ -8,8 +7,8 @@ export class AzureBlobStorage implements IStorage {
     private readonly pathPrefix: string;
     private readonly identifier: string;
 
-    constructor(connectionString: string, container: string) {
-        this.blobService = azure.createBlobService(connectionString);
+    constructor(storageAccount: string, storageKey: string, container: string) {
+        this.blobService = azure.createBlobService(storageAccount, storageKey);
         const pathSplit = container.split('/', 2);
         this.containerRoot = pathSplit[0].toLowerCase();
 
@@ -20,7 +19,7 @@ export class AzureBlobStorage implements IStorage {
             idPrefix = ` - '${this.pathPrefix}'`;
         }
 
-        this.identifier = `Azure Blob Storage - '${this.containerRoot}'${idPrefix}`;
+        this.identifier = `Azure Blob Storage '${storageAccount}' - '${this.containerRoot}'${idPrefix}`;
     }
 
     public Identifier(): string {
@@ -29,7 +28,7 @@ export class AzureBlobStorage implements IStorage {
 
     public async ReadItem(itemPath: string): Promise<any> {
         return await new Promise<any>((resolve, reject) => {
-            this.blobService.getBlobToText(this.containerRoot, this.AdjustPath(itemPath), function (error: any, text: any, blockBlob: any, response: any) {
+            this.blobService.getBlobToText(this.containerRoot, this.AdjustPath(itemPath), (error: any, text: any, blockBlob: any, response: any) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -41,7 +40,7 @@ export class AzureBlobStorage implements IStorage {
 
     public async Exists(itemPath: string): Promise<boolean> {
         return await new Promise<boolean>((resolve, reject) => {
-            this.blobService.doesBlobExist(this.containerRoot, this.AdjustPath(itemPath), function (error: any, result: any, response: any) {
+            this.blobService.doesBlobExist(this.containerRoot, this.AdjustPath(itemPath), (error: any, result: any, response: any) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -55,7 +54,7 @@ export class AzureBlobStorage implements IStorage {
         await this.CreateContainerIfNotExist(this.containerRoot);
 
         return new Promise<void>((resolve, reject) => {
-            this.blobService.createBlockBlobFromText(this.containerRoot, this.AdjustPath(itemPath), content, function (error: any, result: any, response: any) {
+            this.blobService.createBlockBlobFromText(this.containerRoot, this.AdjustPath(itemPath), content, (error: any, result: any, response: any) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -81,7 +80,7 @@ export class AzureBlobStorage implements IStorage {
         return await new Promise<void>((resolve, reject) => {
             this.blobService.createContainerIfNotExists(containerName, {
                 publicAccessLevel: 'container'
-            }, function (error: any, result: any, response: any) {
+            }, (error: any, result: any, response: any) => {
                 if (error) {
                     reject(error);
                 } else {

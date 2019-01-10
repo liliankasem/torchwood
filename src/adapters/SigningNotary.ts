@@ -1,4 +1,3 @@
-import winston = require('winston');
 import Tx = require('ethereumjs-tx');
 import KeyFactory = require("keythereum");
 
@@ -8,10 +7,15 @@ import { IStorage } from './../interfaces/IStorage';
 export class SigningNotary implements ISigningNotary {
     private readonly storage: IStorage;
     private readonly secret: string;
+    private readonly activeKeys: Map<string, Buffer>;
 
     constructor(storage: IStorage, secret: string) {
         this.storage = storage;
         this.secret = secret;
+
+        // TODO: Replace this with some caching service as this is not thread safe
+        // could cause memory leaks.
+        this.activeKeys = new Map<string, Buffer>();
     }
 
     public async Sign(rawTx: any): Promise<string> {
@@ -22,9 +26,13 @@ export class SigningNotary implements ISigningNotary {
     }
 
     private async ReadKey(address: string): Promise<Buffer> {
-        const rawContent = await this.storage.ReadItem(`keystore/${address}.json`);
-        const keyContent = JSON.parse(rawContent);
-        const recovered = KeyFactory.recover(this.secret, keyContent);
-        return new Buffer(recovered, 'hex');
+        if (!this.activeKeys.has(address)) {
+            const rawContent = await this.storage.ReadItem(`keystore/${address}.json`);
+            const keyContent = JSON.parse(rawContent);
+            const recovered = KeyFactory.recover(this.secret, keyContent);
+            this.activeKeys.set(address, new Buffer(recovered, 'hex'));
+        }
+
+        return this.activeKeys.get(address);
     }
 }

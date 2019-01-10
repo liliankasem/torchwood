@@ -1,33 +1,35 @@
-import winston = require('winston');
-import { IReader, IBlockTracker } from './../../interfaces/';
 import { IEthereumReader } from './../IEthereumReader';
-import { BlockReader } from './BlockReader';
 import { TxReader } from './TxReader';
 
 import {
     EthereumBlockDetail,
     EthereumTx,
-    EthereumAddress
+    EthereumAddress,
+    EthereumBlock
 } from './../models';
+
+class MapHelper {
+    public static AddAddress(addressSet: Set<string>, array: EthereumAddress[], address: EthereumAddress) {
+        const asHex = address.AsHex();
+
+        if (!addressSet.has(asHex)) {
+            addressSet.add(asHex);
+            array.push(address);
+        }
+    }
+}
 
 export class BlockDetailReader {
     private eth: IEthereumReader;
-    private readonly blockReader: BlockReader;
 
-    constructor(eth: IEthereumReader, blockTracker: IBlockTracker) {
+    constructor(eth: IEthereumReader) {
         this.eth = eth;
-        this.blockReader = new BlockReader(eth, blockTracker);
     }
 
-    public async MoveNext(): Promise<boolean> {
-        return this.blockReader.MoveNext();
-    }
-
-    public async Read(): Promise<EthereumBlockDetail> {
-        const block = await this.blockReader.ReadBlock();
-        const txs = new Array<EthereumTx>();
+    public async Read(block: EthereumBlock): Promise<EthereumBlockDetail> {
+        const txs : EthereumTx[] = [];
         const addressSet = new Set<string>();
-        const addresses = new Array<EthereumAddress>();
+        const addresses : EthereumAddress[] = [];
 
         if (block.TransactionCount() > 0) {
             const txReader = new TxReader(this.eth, block);
@@ -46,16 +48,5 @@ export class BlockDetailReader {
         }
 
         return new EthereumBlockDetail(block, txs, addresses);
-    }
-}
-
-class MapHelper {
-    static AddAddress(set: Set<string>, array: Array<EthereumAddress>, address: EthereumAddress) {
-        const asHex = address.AsHex();
-
-        if (!set.has(asHex)) {
-            set.add(asHex);
-            array.push(address);
-        }
     }
 }

@@ -1,10 +1,10 @@
 import { IEventBus } from './../interfaces/IEventBus';
 
 export class EventBusGroup implements IEventBus {
-    private readonly clients: Array<IEventBus>;
+    private readonly clients: IEventBus[];
 
     constructor() {
-        this.clients = new Array<IEventBus>();
+        this.clients = [];
     }
 
     public Identifier(): string {
@@ -21,7 +21,7 @@ export class EventBusGroup implements IEventBus {
     }
 
     public async SendEvent(contents: any): Promise<void> {
-        const promises = new Array<Promise<void>>();
+        const promises : Promise<void>[] = [];
 
         this.clients.forEach(client => {
             promises.push(client.SendEvent(contents));

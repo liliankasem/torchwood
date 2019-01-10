@@ -1,4 +1,3 @@
-import winston = require('winston');
 import { IWeb3Adapter } from './../IWeb3Adapter';
 import { IStorage } from './../../interfaces/IStorage';
 import {
@@ -6,85 +5,83 @@ import {
     EthereumEstimate,
     EthereumTxInput
 } from './../models';
+import {
+    EthereumStorage
+} from './../EthereumStorage';
+import winston = require('winston');
+import { EthereumWeb3AdapterDecorator } from './EthereumWeb3AdapterDecorator';
 
-export class EthereumWeb3AdapterStorageCache implements IWeb3Adapter {
-    private readonly baseClient: IWeb3Adapter;
-    private readonly storage: IStorage;
+type Func<T> = () => Promise<T>;
+
+export class EthereumWeb3AdapterStorageCache extends EthereumWeb3AdapterDecorator {
+    private readonly storage: EthereumStorage;
 
     constructor(baseClient: IWeb3Adapter, storage: IStorage) {
-        this.baseClient = baseClient;
-        this.storage = storage;
+        super(baseClient);
+        this.storage = new EthereumStorage(storage);
     }
 
     public async GetBlock(identifier: any): Promise<any> {
-        const block = await this.baseClient.GetBlock(identifier);
-        await this.storage.SaveItem(`Blocks/${block.number}/block.json`, JSON.stringify(block));
+        const block = await super.GetBlock(identifier);
+        await this.storage.SaveBlock(block);
         return block;
     }
 
     public async GetTransaction(txHash: string): Promise<any> {
-        const tx = await this.baseClient.GetTransaction(txHash);
-        await this.storage.SaveItem(`Tx/${txHash}/tx.json`, JSON.stringify(tx));
+        const tx = await super.GetTransaction(txHash);
+        await this.storage.SaveTransaction(tx);
         return tx;
     }
 
     public async GetTransactionReceipt(txHash: string): Promise<any> {
-        const receipt = await this.baseClient.GetTransactionReceipt(txHash);
-        await this.storage.SaveItem(`Tx/${txHash}/receipt.json`, JSON.stringify(receipt));
+        const receipt = await super.GetTransactionReceipt(txHash);
+        await this.storage.SaveTransactionReceipt(receipt);
         return receipt;
     }
 
     public async GetTrace(txHash: string): Promise<any> {
-        const trace = await this.baseClient.GetTrace(txHash);
-        await this.storage.SaveItem(`Tx/${txHash}/trace.json`, JSON.stringify(trace));
+        const trace = await super.GetTrace(txHash);
+        await this.storage.SaveTrace(txHash, trace);
         return trace;
     }
 
     public async GetCode(address: string): Promise<EthereumCode> {
-        const code = await this.baseClient.GetCode(address);
+        const code = await super.GetCode(address);
 
         if (code) {
-            const hash = code.Hash();
-
-            await this.storage.SaveItem(`Code/${code.Hash()}/code.json`, JSON.stringify(code.Code()));
-            await this.storage.SaveItem(`Addresses/${address}/codeHash.json`, JSON.stringify(hash));
+            await this.storage.SaveCode(address, code);
         }
 
         return code;
     }
 
-    public GetContractInstance(address: string, abi: any): Promise<any> {
-        return this.baseClient.GetContractInstance(address, abi);
-    }
-
-    public async ReadContract(address: string, abi: any, block?: any): Promise<any> {
-        return this.baseClient.ReadContract(address, abi, block);
-    }
-
-    public async GetEvents(address: string, abi: any, block?: any): Promise<any> {
-        return this.baseClient.GetEvents(address, abi, block);
-    }
-    public async GetNetworkId(): Promise<number> {
-        return this.baseClient.GetNetworkId();
-    }
-
     public async EstimateTx(tx: EthereumTxInput): Promise<EthereumEstimate> {
-        return this.baseClient.EstimateTx(tx);
+        return this.LogResult("EstimateTx", tx, async () => {
+            return super.EstimateTx(tx);
+        });
     }
 
     public async PrepareEstimatedTx(tx: EthereumEstimate): Promise<any> {
-        return this.baseClient.PrepareEstimatedTx(tx);
+        return this.LogResult("PrepareEstimatedTx", tx, async () => {
+            return super.PrepareEstimatedTx(tx);
+        });
     }
 
     public async SendSignedTx(txBytesAsHex: string): Promise<string> {
-        return this.baseClient.SendSignedTx(txBytesAsHex);
-    }
-
-    public async GetBalance(address: string): Promise<number> {
-        return this.baseClient.GetBalance(address);
+        return this.LogResult("SendSignedTx", txBytesAsHex, async () => {
+            return super.SendSignedTx(txBytesAsHex);
+        });
     }
 
     public async WaitForTx(txHash: string): Promise<any> {
-        return this.baseClient.WaitForTx(txHash);
+        return this.LogResult("WaitForTx", txHash, async () => {
+            return super.WaitForTx(txHash);
+        });
+    }
+
+    private async LogResult<T>(prefix: string, input: any, fn: Func<T>): Promise<T> {
+        const result = await fn();
+        await this.storage.LogResult(prefix, input, result);
+        return result;
     }
 }

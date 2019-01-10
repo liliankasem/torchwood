@@ -1,9 +1,8 @@
 import Web3 = require('web3');
-import net = require('net');
 import winston = require('winston');
 import { JobQueue, Task } from './../../modules';
 import { IWeb3Adapter } from './../IWeb3Adapter';
-import { EthereumAddress, EthereumEstimate, EthereumTxInput, EthereumCode } from './../models';
+import { EthereumEstimate, EthereumTxInput, EthereumCode } from './../models';
 
 
 export class EthereumWeb3Adapter implements IWeb3Adapter {
@@ -28,7 +27,7 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
                 method: "debug_traceTransaction",
                 params: [txHash],
                 id: new Date().getTime()
-            }, function (err: any, result: any) {
+            }, (err: any, result: any) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -240,24 +239,5 @@ export class EthereumWeb3Adapter implements IWeb3Adapter {
                 }
             });
         }));
-    }
-
-    private IsEmpty(obj: any): boolean {
-        // null and undefined are "empty"
-        if (obj == null) { return true; }
-
-        // Assume if it has a length property with a non-zero value
-        // that that property is correct.
-        if (obj.length && obj.length > 0) { return false; }
-        if (obj.length === 0) { return true; }
-
-        // Otherwise, does it have any properties of its own?
-        // Note that this doesn't handle
-        // toString and toValue enumeration bugs in IE < 9
-        for (const key in obj) {
-            return false;
-        }
-
-        return true;
     }
 }

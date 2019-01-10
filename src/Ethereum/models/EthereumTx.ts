@@ -1,4 +1,3 @@
-import winston = require('winston');
 import { EthereumAddress } from './EthereumAddress';
 
 export class EthereumTx {
@@ -25,7 +24,9 @@ export class EthereumTx {
             address = this.tx.to;
         }
 
-        if (!address) { throw "There is no target address"; }
+        if (!address) {
+            throw "There is no target address";
+        }
 
         return new EthereumAddress(address);
     }
@@ -38,7 +39,7 @@ export class EthereumTx {
         return this.tx.hash;
     }
 
-    public AsSerializable() : string {
-        return JSON.stringify({tx: this.tx, receipt: this.receipt});
+    public AsSerializable(): string {
+        return JSON.stringify({ tx: this.tx, receipt: this.receipt });
     }
 }

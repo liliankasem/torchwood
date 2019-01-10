@@ -1,11 +1,11 @@
 import winston = require('winston');
 import solc = require('solc');
-import coder = require('web3/lib/solidity/coder');
 
 import { IStorage, INotary, IIdentifier } from './../interfaces';
 import { ContractPathFactory } from './ContractPathFactory';
 import { IWeb3Adapter, Ethereum } from './../Ethereum';
 import { GenericIdentifier } from './../adapters';
+import { EncodedContractCall } from './EncodedContractCall';
 
 export class ContractFactory {
 
@@ -20,7 +20,6 @@ export class ContractFactory {
         this.notary = notary;
         this.paths = new ContractPathFactory(storage);
     }
-
 
     public async UploadTruffleCompiledJson(compiled : string) : Promise<IIdentifier> {
         const contractData : any = JSON.parse(compiled);
@@ -54,7 +53,7 @@ export class ContractFactory {
                 error.name = "Compilation failed";
                 throw error;
             }
-            const promises = new Array<Promise<void>>();
+            const promises: Promise<void>[] = [];
 
             Object.keys(compiled.contracts).forEach(contractKey => {
                 const contract = compiled.contracts[contractKey];
@@ -87,32 +86,26 @@ export class ContractFactory {
         await Promise.all(fileWrites);
     }
 
-    public async PrepareTransaction(address: Ethereum.Models.EthereumAddress, id: IIdentifier, contractName: string, method: string, argumentPayload: any): Promise<any> {
-        const contractPath = await this.paths.GetCompiledPath(id.AsString(), contractName);
-        const contract = JSON.parse(await this.storage.ReadItem(contractPath));
-        const abi = JSON.parse(contract.interface);
-        const encodedParams = this.EncodeContractParameters(abi, argumentPayload, method);
-        const rawTx = new Ethereum.Models.EthereumTxInput(address, contract.bytecode, encodedParams);
+    public async PrepareTransaction(address: Ethereum.Models.EthereumAddress, id: IIdentifier, contractName: string, method: string = null, argumentPayload: any[] = []) : Promise<any> {
+        const encoded = await this.GetEncodedContract(id, contractName, method, argumentPayload);
+        return this.PrepareEncodedTransaction(address, encoded);
+    }
+
+
+    private async PrepareEncodedTransaction(fromAddress: Ethereum.Models.EthereumAddress, payload: EncodedContractCall, toAddress: Ethereum.Models.EthereumAddress = null): Promise<any> {
+        const rawTx = new Ethereum.Models.EthereumTxInput(fromAddress, payload.ByteCode(), payload.EncodedCall(), toAddress);
         const estimate = await this.web3.EstimateTx(rawTx);
         return await this.web3.PrepareEstimatedTx(estimate);
     }
 
-    private IsAbiMatch(method: string, abi: any): boolean {
-        let result = abi.type === 'constructor';
-
-        if (method) {
-            result = abi.name === method;
-        }
-
-        return result;
+    public async PrepareUpdate(fromAddress: Ethereum.Models.EthereumAddress, toAddress: Ethereum.Models.EthereumAddress, id: IIdentifier, contractName: string, method: string = null, argumentPayload: any[] = []): Promise<any> {
+        const encoded = await this.GetEncodedContract(id, contractName, method, argumentPayload);
+        return this.PrepareEncodedTransaction(fromAddress, encoded, toAddress);
     }
 
-    private EncodeContractParameters(abi: Array<any>, params: any, method: string): any {
-        const paramKeys = Object.keys(params);
-        const paramsCount = paramKeys.length;
-        const methodDecl = abi.filter((json) => this.IsAbiMatch(method, json) && json.inputs.length === paramsCount)[0];
-        const types = methodDecl.inputs.map(input => input.type);
-        const values = paramKeys.map(key => params[key]);
-        return coder.encodeParams(types, values);
+    private async GetEncodedContract(contractId: IIdentifier, contractName: string, method: string = null, argumentPayload: any[] = []): Promise<any> {
+        const contractPath = await this.paths.GetCompiledPath(contractId.AsString(), contractName);
+        const contract = JSON.parse(await this.storage.ReadItem(contractPath));
+        return new EncodedContractCall(contract, method, argumentPayload);
     }
 }
