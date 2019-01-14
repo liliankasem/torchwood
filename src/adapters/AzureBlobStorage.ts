@@ -7,8 +7,8 @@ export class AzureBlobStorage implements IStorage {
     private readonly pathPrefix: string;
     private readonly identifier: string;
 
-    constructor(storageAccount: string, storageKey: string, container: string) {
-        this.blobService = azure.createBlobService(storageAccount, storageKey);
+    constructor(connectionString: string, container: string) {
+        this.blobService = azure.createBlobService(connectionString);
         const pathSplit = container.split('/', 2);
         this.containerRoot = pathSplit[0].toLowerCase();
 
@@ -19,7 +19,7 @@ export class AzureBlobStorage implements IStorage {
             idPrefix = ` - '${this.pathPrefix}'`;
         }
 
-        this.identifier = `Azure Blob Storage '${storageAccount}' - '${this.containerRoot}'${idPrefix}`;
+        this.identifier = `Azure Blob Storage - '${this.containerRoot}'${idPrefix}`;
     }
 
     public Identifier(): string {
